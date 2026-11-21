@@ -49,7 +49,7 @@ type PropertyOffer = {
   tag: string;
 };
 
-const requestSuggestions = ["Rent a car", "Find a home", "Buy a gift"];
+const requestSuggestions = ["Rent a car", "Buy a car", "Find a home", "Buy a gift"];
 const supportedEmirates = ["Dubai", "Abu Dhabi", "Sharjah", "Ajman", "Umm Al Quwain", "Ras Al Khaimah", "Fujairah"];
 
 const retailBrands: { brand: string; categories: RetailCategory[]; description: string; href: string; tag: string }[] = [
