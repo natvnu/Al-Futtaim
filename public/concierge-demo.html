@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f8f4">
+  <title>Al-Futtaim Personal Concierge</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #202b25;
+      --muted: #68736c;
+      --green: #315b49;
+      --green-dark: #244738;
+      --line: #dce2dc;
+      --paper: #f8f8f4;
+      --white: #fff;
+      --mint: #edf2eb;
+      --clay: #bf765c;
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; color: var(--ink); background: var(--paper); font-family: var(--sans); font-size: 14px; -webkit-font-smoothing: antialiased; }
+    button, textarea { font: inherit; }
+    button:focus-visible, a:focus-visible, textarea:focus-visible { outline: 3px solid #91b49d; outline-offset: 3px; }
+    .shell { width: min(1100px, calc(100% - 64px)); margin: 0 auto; }
+    .topbar { height: 76px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
+    .brand { display: inline-flex; align-items: center; gap: 11px; color: var(--ink); text-decoration: none; }
+    .brand-mark { width: 35px; height: 35px; display: grid; place-items: center; border-radius: 50%; background: var(--green); color: white; font: italic 17px var(--serif); }
+    .brand-name { font-size: 14px; font-weight: 700; letter-spacing: .03em; }
+    .brand-name small { display: block; margin-top: 3px; color: var(--muted); font-size: 8px; font-weight: 600; letter-spacing: .17em; }
+    .prototype { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 10px; letter-spacing: .09em; text-transform: uppercase; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: #82a58c; }
+    .intro { max-width: 760px; margin: 0 auto; padding: 70px 0 61px; }
+    .eyebrow { margin: 0 0 17px; color: var(--green); font-size: 10px; font-weight: 700; letter-spacing: .16em; line-height: 1.5; }
+    .eyebrow span { margin-right: 12px; color: var(--clay); }
+    h1 { margin: 0; font: 500 clamp(44px, 6vw, 68px)/1.04 var(--serif); letter-spacing: 0; }
+    .intro-copy { max-width: 530px; margin: 17px 0 24px; color: #5f6963; font-size: 15px; line-height: 1.75; }
+    .request-form { padding: 8px; border: 1px solid #cfd8ce; background: var(--white); box-shadow: 0 12px 34px rgb(32 43 37 / 6%); }
+    .request-input { display: block; width: 100%; min-height: 105px; padding: 15px; resize: vertical; border: 0; background: transparent; color: var(--ink); font-size: 14px; line-height: 1.6; }
+    .request-input::placeholder { color: #87918a; }
+    .suggestions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 0 12px 12px; }
+    .suggestions-label { margin-right: 3px; color: var(--muted); font-size: 9px; font-weight: 700; letter-spacing: .1em; }
+    .suggestion { min-height: 31px; padding: 0 10px; border: 1px solid var(--line); background: var(--paper); color: var(--green); font-size: 10px; cursor: pointer; transition: background .16s ease, border-color .16s ease; }
+    .suggestion:hover { border-color: #aab7ac; background: #f0f4ee; }
+    .form-actions { display: flex; justify-content: flex-end; }
+    .primary { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 22px; padding: 0 17px; border: 1px solid var(--green); background: var(--green); color: white; font-size: 11px; font-weight: 600; cursor: pointer; transition: background .16s ease, transform .16s ease; }
+    .primary:hover { transform: translateY(-1px); border-color: var(--green-dark); background: var(--green-dark); }
+    .primary:disabled { cursor: not-allowed; opacity: .55; }
+    .arrow { font-size: 15px; font-weight: 400; }
+    .intro-note { display: flex; align-items: center; gap: 11px; margin-top: 16px; color: var(--muted); font-size: 11px; }
+    .note-rule { width: 30px; height: 1px; background: var(--clay); }
+    .results { padding: 37px 0 42px; border-top: 1px solid var(--line); animation: rise .3s ease both; }
+    .results[hidden] { display: none; }
+    .results-header { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 22px; }
+    .results-header .eyebrow { margin-bottom: 8px; }
+    h2 { margin: 0; font: 500 30px/1.2 var(--serif); }
+    .summary { margin: 8px 0 0; color: var(--muted); font-size: 11px; }
+    .edit { padding: 8px 0; border: 0; border-bottom: 1px solid #aab7ac; background: transparent; color: var(--green); font-size: 11px; cursor: pointer; white-space: nowrap; }
+    .count { margin: 0 0 13px; color: var(--muted); font-size: 10px; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
+    .card { min-width: 0; padding: 20px; border: 1px solid var(--line); background: var(--white); }
+    .card-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-bottom: 13px; border-bottom: 1px solid #e7ebe6; }
+    .wordmark { color: var(--green); font-size: 17px; font-weight: 700; }
+    .tag { padding: 5px 7px; background: #f4eee8; color: #8c5b48; font-size: 8px; }
+    .card-label { margin: 15px 0 6px; color: var(--green); font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    .card h3, .no-match h3 { margin: 0; font: 500 20px/1.3 var(--serif); }
+    .description { min-height: 36px; margin: 9px 0 14px; color: var(--muted); font-size: 11px; line-height: 1.65; }
+    .reason { padding: 11px 0; border-top: 1px solid #e7ebe6; border-bottom: 1px solid #e7ebe6; color: var(--muted); font-size: 10px; line-height: 1.5; }
+    .reason strong { display: block; margin-bottom: 2px; color: var(--ink); font-size: 9px; }
+    .availability { margin: 11px 0 14px; color: #806a5b; font-size: 9px; line-height: 1.6; }
+    .secondary { min-height: 39px; display: inline-flex; align-items: center; justify-content: center; gap: 16px; padding: 0 12px; border: 1px solid var(--line); background: transparent; color: var(--green); font-size: 10px; font-weight: 600; text-decoration: none; transition: border-color .16s ease, background .16s ease; }
+    .secondary:hover { border-color: var(--green); background: #f2f5f1; }
+    .no-match { display: flex; gap: 12px; padding: 20px 0; }
+    .no-match[hidden] { display: none; }
+    .no-match-mark { color: var(--clay); font-size: 17px; }
+    .no-match p { max-width: 700px; margin: 8px 0 0; color: var(--muted); font-size: 11px; line-height: 1.7; }
+    .disclaimer { margin: 17px 0 0; color: var(--muted); font-size: 9px; line-height: 1.7; }
+    .footer { display: flex; justify-content: space-between; gap: 20px; padding: 21px 0 27px; border-top: 1px solid var(--line); color: #89928b; font-size: 8px; letter-spacing: .12em; }
+    @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 650px) {
+      .shell { width: min(100% - 40px, 1100px); }
+      .topbar { height: 65px; }
+      .intro { padding: 47px 0 38px; }
+      .prototype { font-size: 8px; }
+      .results { padding: 31px 0; }
+      .results-header { align-items: flex-start; }
+      h2 { font-size: 26px; }
+      .grid { grid-template-columns: 1fr; }
+      .description { min-height: 0; }
+      .footer { font-size: 7px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="Al-Futtaim personal concierge">
+        <span class="brand-mark">af</span>
+        <span class="brand-name">Al-Futtaim<small>PERSONAL CONCIERGE</small></span>
+      </a>
+      <div class="prototype"><span class="dot"></span>UAE · Prototype</div>
+    </header>
+
+    <section class="intro" id="top">
+      <p class="eyebrow"><span>01</span> AL-FUTTAIM PERSONAL CONCIERGE</p>
+      <h1>How can we help?</h1>
+      <p class="intro-copy">Tell us what you’re looking for and we’ll find a relevant place to start.</p>
+      <form class="request-form" id="request-form">
+        <label class="sr-only" for="request">Describe what you need</label>
+        <textarea class="request-input" id="request" rows="3" placeholder="I’m looking for a one-bedroom apartment in Dubai..."></textarea>
+        <div class="suggestions" aria-label="Suggested requests">
+          <span class="suggestions-label">TRY ASKING</span>
+          <button class="suggestion" type="button" data-prompt="Rent a car">Rent a car</button>
+          <button class="suggestion" type="button" data-prompt="Buy school supplies">Buy school supplies</button>
+          <button class="suggestion" type="button" data-prompt="Buy a gift">Buy a gift</button>
+        </div>
+        <div class="form-actions"><button class="primary" id="submit" type="submit">Find options <span class="arrow" aria-hidden="true">↗</span></button></div>
+      </form>
+      <div class="intro-note"><span class="note-rule"></span>A few thoughtful questions. No account needed.</div>
+    </section>
+
+    <section class="results" id="results" aria-live="polite" aria-labelledby="results-heading" hidden>
+      <div class="results-header">
+        <div><p class="eyebrow" id="results-eyebrow">A FIRST LOOK · DUBAI</p><h2 id="results-heading"></h2><p class="summary" id="summary"></p></div>
+        <button class="edit" id="edit" type="button">Edit request <span class="arrow" aria-hidden="true">↗</span></button>
+      </div>
+      <p class="count" id="count" role="status"></p>
+      <div class="grid" id="cards"></div>
+      <div class="no-match" id="no-match" hidden><span class="no-match-mark">—</span><div><h3 id="no-match-title"></h3><p id="no-match-copy"></p></div></div>
+      <p class="disclaimer" id="disclaimer"></p>
+    </section>
+
+    <footer class="footer"><span>AL-FUTTAIM · PERSONAL CONCIERGE</span><span>BUILT AROUND WHAT MATTERS TO YOU</span></footer>
+  </main>
+
+  <script>
+    "use strict";
+    const $ = (selector) => document.querySelector(selector);
+    const form = $("#request-form");
+    const input = $("#request");
+    const resultSection = $("#results");
+    const emirates = ["Dubai", "Abu Dhabi", "Sharjah", "Ajman", "Umm Al Quwain", "Ras Al Khaimah", "Fujairah"];
+    const bedroomWords = { one: 1, two: 2, three: 3, four: 4, five: 5 };
+    const stores = [
+      { brand: "Seiko", category: "watches", label: "Gift ideas · Watches", description: "Explore Seiko watches through Al-Futtaim’s UAE brand page and check current models with the retailer.", href: "https://www.alfuttaim.com/en/our-brands/seiko/" },
+      { brand: "Zara", category: "fashion", label: "Gift ideas · Fashion", description: "Browse Zara UAE fashion and accessories; confirm current gift items and availability with the store.", href: "https://www.zara.com/ae/" },
+      { brand: "Marks & Spencer", category: "fashion", label: "Gift ideas · Fashion", description: "Browse Marks & Spencer UAE for clothing and accessories that may suit a gift; confirm current products with the store.", href: "https://www.marksandspencer.ae/en-ae/" },
+      { brand: "Ted Baker", category: "fashion", label: "Gift ideas · Fashion", description: "Browse Ted Baker UAE fashion and accessories; confirm current gift items and availability with the store.", href: "https://www.tedbaker.ae/" },
+      { brand: "IKEA", category: "home", label: "Gift ideas · Home", description: "Explore home and lifestyle gifts from IKEA UAE; check current products and stock with the store.", href: "https://www.ikea.com/ae/en/" },
+      { brand: "Toys“R”Us UAE", category: "toys", label: "Gift ideas · Toys", description: "Browse Toys“R”Us UAE for toys and children’s gifts; confirm current assortment with the store.", href: "https://toysrusmena.com/" },
+      { brand: "Panasonic", category: "electronics", label: "Gift ideas · Electronics", description: "Explore Panasonic products through Al-Futtaim’s UAE brand page and confirm current gift options with the retailer.", href: "https://www.alfuttaim.com/en/our-brands/panasonic/" }
+    ];
+    const properties = [
+      { brand: "Al Badia Living", intent: "rent", bedrooms: [1, 2, 3, 4], label: "For rent · Dubai Festival City", description: "One- to four-bedroom apartments. Dubai Festival City currently lists the community as leasing.", href: "https://albadialiving.com/?utm_source=dfc_website&utm_medium=live_page&utm_id=block", tag: "Leasing listed" },
+      { brand: "Al Badia Residences", intent: "rent", bedrooms: [1, 2, 3], label: "For rent · Dubai Festival City", description: "Low-rise apartments set among landscaped gardens. The official page lists one- to three-bedroom homes for rent.", href: "https://www.dubaifestivalcity.com/live/rent-a-property/al-badia-residences/", tag: "Rental property" },
+      { brand: "Marsa Plaza", intent: "buy", bedrooms: [1, 2, 3, 4], label: "For sale · Dubai Festival City", description: "Creek-side one- to three-bedroom apartments and three- to four-bedroom duplexes. Confirm current sales availability with the property team.", href: "https://www.dubaifestivalcity.com/live/buy-a-property/marsa-plaza/", tag: "For sale" },
+      { brand: "Al Badia Hillside", intent: "buy", bedrooms: [1, 3], label: "For sale · Dubai Festival City", description: "A residential community with published one-bedroom-plus-study and three-bedroom floor plans. Confirm current availability with the property team.", href: "https://www.dubaifestivalcity.com/live/al-badia-hillside/", tag: "For sale" }
+    ];
+    const vehicles = [
+      ["Toyota", "Yaris", "Compact sedan", 64900, "https://www.toyota.ae/en/new-cars/yaris/"],
+      ["Toyota", "Corolla", "Sedan", 76900, "https://www.toyota.ae/en/new-cars/corolla/"],
+      ["Toyota", "Camry", "Sedan", 122900, "https://www.toyota.ae/en/new-cars/camry/"],
+      ["Toyota", "RAV4", "SUV", 105900, "https://www.toyota.ae/en/new-cars/rav4/"],
+      ["Toyota", "Land Cruiser Prado", "SUV", 199900, "https://www.toyota.ae/en/new-cars/land-cruiser-prado/"],
+      ["Honda", "City", "Sedan", null, "https://honda-mideast.com/en-ae/automobiles/cars/new-city"],
+      ["Honda", "Civic", "Sedan", null, "https://honda-mideast.com/en-ae/automobiles/cars/Civic-MMC"],
+      ["Lexus", "RX", "SUV", null, "https://www.alfuttaim.com/en/our-brands/lexus/"],
+      ["Volvo", "XC60", "SUV", null, "https://www.volvocarsuae.ae/en/"],
+      ["BYD", "SEAL", "Electric sedan", null, "https://www.alfuttaim.com/en/our-brands/byd/"]
+    ];
+    const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]);
+    const matches = (pattern, text) => pattern.test(text);
+
+    function parseRequest(raw) {
+      const text = raw.toLowerCase().replace(/[’']/g, "'");
+      const school = /school[\s-]*suppl(?:y|ies)|stationery|back[\s-]*to[\s-]*school/.test(text);
+      const rentalCar = /\b(?:rent|rental|hire|lease)\b.{0,20}\b(?:car|vehicle)\b|\b(?:car|vehicle)\b.{0,20}\b(?:rent|rental|hire|lease)\b/.test(text);
+      const medical = /medical|health|insurance|cover/.test(text);
+      const carMake = ["Toyota", "Lexus", "Honda", "Volvo", "BYD"].find((make) => new RegExp(`\\b${make.toLowerCase()}\\b`).test(text));
+      const carPrice = /\b(?:aed\s*\d|under\s*\d|below\s*\d|budget\s*\d)/.test(text);
+      const carRequest = Boolean(carMake) || carPrice || /\bcar\b|\bvehicle\b/.test(text);
+      const bedroomMatch = text.match(/\b(\d+|one|two|three|four|five)\s*(?:bed(?:room)?s?|br)\b/);
+      const bedrooms = bedroomMatch ? Number(bedroomMatch[1].replace(/\D/g, "") || bedroomWords[bedroomMatch[1]]) : null;
+      const buy = /\b(?:buy|purchase|for sale)\b/.test(text);
+      const rent = /\b(?:rent|rental|lease|for rent)\b/.test(text);
+      const homeTerms = /\b(?:home|house|property|apartment|villa|flat)\b/.test(text);
+      const property = (bedrooms !== null && (buy || rent)) || (homeTerms && (buy || rent)) || /\b(?:property|apartment|villa)\b/.test(text);
+      const unsupportedGift = /jewel|jewelry|jewellery|cosmetic|makeup|beauty|perfume|fragrance|spa|massage|voucher|gift[\s-]*card/.test(text);
+      const gift = unsupportedGift || /\bgift\b|\bgifts\b|\bpresent\b|\bpresents\b|watch|timepiece|handbag|\bbags?\b|\bwallet\b|accessor|\btoys?\b|headphone/.test(text);
+      const retail = /clothes|clothing|fashion|shoes|footwear/.test(text);
+      const emirate = emirates.find((name) => text.includes(name.toLowerCase())) || "Dubai";
+      const giftCategory = unsupportedGift ? "unsupported"
+        : /watch|timepiece|seiko/.test(text) ? "watches"
+        : /bag|handbag|accessor|fashion|clothes|clothing|scarf|wallet/.test(text) ? "fashion"
+        : /home|house|kitchen|decor|candle|living/.test(text) ? "home"
+        : /toy|children|kid|baby|game/.test(text) ? "toys"
+        : /electronic|headphone|tablet|phone|camera|speaker|panasonic/.test(text) ? "electronics" : "all";
+      const need = school ? "school" : rentalCar ? "car-rental" : medical ? "medical" : property ? "property" : carRequest ? "car" : gift ? "gift" : retail ? "retail" : /furnish|furniture|sofa|\bbed\b|storage|room|bedroom/.test(text) ? "furnishings" : /diy|repair|fix|renovat|improv|tool|paint/.test(text) ? "improvement" : "planning";
+      return { text, need, bedrooms, intent: buy ? "buy" : rent ? "rent" : "either", emirate, giftCategory, carMake };
+    }
+
+    function card(item, result) {
+      const brand = escapeHtml(item.brand);
+      const href = escapeHtml(item.href || "#");
+      const label = escapeHtml(item.label || "");
+      const description = escapeHtml(item.description || "");
+      const tag = escapeHtml(item.tag || "Al-Futtaim brand");
+      const reason = escapeHtml(item.reason || "");
+      const title = escapeHtml(item.title || `Explore ${brand}`);
+      const cta = escapeHtml(item.cta || `Visit ${brand}`);
+      return `<article class="card"><div class="card-top"><span class="wordmark">${brand}</span><span class="tag">${tag}</span></div><p class="card-label">${label}</p><h3>${title}</h3><p class="description">${description}</p><div class="reason"><strong>Why this appeared</strong>${reason}</div><p class="availability">${escapeHtml(item.availability || result.availability)}</p><a class="secondary" href="${href}" target="_blank" rel="noopener noreferrer">${cta}<span class="arrow" aria-hidden="true">↗</span></a></article>`;
+    }
+
+    function buildResults(result) {
+      let cards = [];
+      let heading = "A few places to start.";
+      let summary = `Based on what you shared: ${result.emirate}.`;
+      let noMatchTitle = "No verified match for that need yet.";
+      let noMatchCopy = "We haven’t connected a verified option for this request yet.";
+      let disclaimer = "Prototype concepts only. These are not confirmed offers, live availability, or a promise of service. Validate each option with its provider before launch.";
+      let availability = "Availability and service details need confirmation with the provider.";
+
+      if (result.need === "school") {
+        heading = "School supplies to explore";
+        summary = `Toys“R”Us UAE · ${result.emirate}`;
+        cards = [{ brand: "Toys“R”Us UAE", tag: "Al-Futtaim Retail", label: "School essentials · Al-Futtaim Retail", title: "Browse school essentials", description: "Toys“R”Us is part of Al-Futtaim Retail. Browse its UAE store and check which school supplies are currently available.", href: "https://toysrusmena.com/", cta: "Visit Toys“R”Us UAE", reason: `School supplies · ${result.emirate}`, availability: "Al-Futtaim operates Toys“R”Us, but school-supply assortment and stock should be checked with the store." }];
+        disclaimer = "Toys“R”Us is listed in Al-Futtaim Retail’s published brand portfolio. Check the UAE store for current school-supply products and availability.";
+      } else if (result.need === "car-rental") {
+        heading = "Cars to rent";
+        summary = `Hertz UAE car rentals · ${result.emirate}`;
+        cards = [{ brand: "Hertz UAE", tag: "Al-Futtaim Automotive", label: "Car rental · UAE", title: "Rent a car with Hertz", description: "Explore short-term and long-term car rentals from Hertz UAE. Check current vehicles, rates and rental terms directly with Hertz.", href: "https://www.hertz.ae/", cta: "Explore Hertz rentals", reason: `Car rental · ${result.emirate}`, availability: "Rental vehicles, rates, terms, and availability are confirmed by Hertz UAE." }];
+      } else if (result.need === "medical") {
+        heading = "Medical cover to explore";
+        summary = `Individual or family medical cover · ${result.emirate}`;
+        cards = [{ brand: "Orient Insurance", tag: "Orient medical insurance", label: "Medical insurance · UAE", title: "Explore medical cover with Orient", description: "Orient describes individual medical packages with options including inpatient, outpatient, regional and worldwide cover. Contact Orient for current plan details.", href: "https://www.insuranceuae.com/medical-insurance/individual/individual/", cta: "View plans & contact Orient", reason: `Medical cover · ${result.emirate}`, availability: "Orient must confirm plan terms, eligibility, benefits, network and premiums." }];
+        disclaimer = "Orient is the insurer and must confirm product terms, eligibility, benefits, network, and premiums. No medical information is collected or sent by this prototype.";
+      } else if (result.need === "property") {
+        const emirateIsDubai = result.emirate === "Dubai";
+        heading = result.intent === "buy" ? "Homes to buy" : result.intent === "rent" ? "Homes for rent" : "Property options";
+        summary = `${result.intent === "either" ? "Rent or buy" : result.intent} · ${result.bedrooms === null ? "Any bedrooms" : `${result.bedrooms} bedroom${result.bedrooms === 1 ? "" : "s"}`} · Apartment · ${result.emirate}`;
+        availability = "Unit-level availability and prices can change. Check the official property page for current details.";
+        if (emirateIsDubai) {
+          cards = properties.filter((offer) => (result.intent === "either" || offer.intent === result.intent) && (result.bedrooms === null || offer.bedrooms.includes(result.bedrooms))).map((offer) => ({ brand: offer.brand, tag: offer.tag, label: offer.label, title: offer.brand, description: offer.description, href: offer.href, cta: `View ${offer.brand}`, reason: `${offer.intent === "rent" ? "Rent" : "Buy"} · ${result.bedrooms === null ? "any bedrooms" : `${result.bedrooms} bedroom${result.bedrooms === 1 ? "" : "s"}`} · Dubai` }));
+        }
+        if (!cards.length) {
+          noMatchTitle = !emirateIsDubai ? `No verified property match in ${result.emirate} yet.` : "No verified properties match these filters yet.";
+          noMatchCopy = !emirateIsDubai ? "The property offers currently verified in this prototype are in Dubai Festival City." : "No checked sale or rental offer matches this bedroom and tenure combination. Check the official property pages for current options.";
+        }
+      } else if (result.need === "car") {
+        heading = result.carMake ? `${result.carMake} cars to explore` : "Cars to explore";
+        summary = `${result.carMake || "Al-Futtaim automotive brands"} · New cars · ${result.emirate}`;
+        cards = vehicles.filter(([make]) => !result.carMake || make === result.carMake).map(([make, name, body, price, href]) => ({ brand: `${make} ${name}`, tag: price ? "Published UAE starting price" : "Official UAE model listing", label: `${body} · ${make} UAE range`, title: name, description: `${name} is listed in ${make}’s UAE range. Confirm current grades, pricing, and availability on the official site.`, href, cta: `View ${make} ${name}`, reason: `${result.emirate} · ${result.carMake || "Al-Futtaim vehicle portfolio"}`, availability: "Prices, trims, and vehicle availability can change. Confirm current details with the official UAE brand site.", price }));
+        disclaimer = "Links go to official brand pages. Published starting prices may change; vehicle stock, trim availability, and test drives are not connected to this prototype.";
+      } else if (result.need === "gift") {
+        heading = result.giftCategory === "unsupported" ? "Gift category not connected" : result.giftCategory === "all" ? "Gift ideas to explore" : `${result.giftCategory[0].toUpperCase()}${result.giftCategory.slice(1)} gifts to explore`;
+        summary = `${result.giftCategory === "unsupported" ? "No verified match" : result.giftCategory === "all" ? "Verified Al-Futtaim retail brands" : result.giftCategory} · ${result.emirate}`;
+        availability = "This is an Al-Futtaim brand destination, not live gift inventory. Confirm suitable products, gifting options, and stock with the store.";
+        cards = result.giftCategory === "unsupported" ? [] : stores.filter((store) => result.giftCategory === "all" || store.category === result.giftCategory).map((store) => ({ brand: store.brand, label: store.label, title: `Explore gifts at ${store.brand}`, description: store.description, href: store.href, cta: `Visit ${store.brand}`, tag: "Al-Futtaim brand", reason: `${result.giftCategory === "all" ? "Gift ideas" : result.giftCategory} · ${result.emirate}` }));
+        if (!cards.length) {
+          noMatchTitle = "No connected Al-Futtaim gift shop for that category yet.";
+          noMatchCopy = "Jewellery, beauty products, perfume, and spa vouchers are not connected to verified Al-Futtaim stores in this prototype. Try watches, fashion, home, toys, or electronics.";
+        }
+        disclaimer = "Gift results link to brands in Al-Futtaim’s retail portfolio. Store links do not confirm particular products, gift cards, or live stock. Jewellery, beauty, perfume, and spa vouchers are not currently connected.";
+      } else if (result.need === "retail") {
+        heading = "Clothes to shop";
+        summary = `Clothing · UAE stores · ${result.emirate}`;
+        cards = [
+          { brand: "Zara", label: "Clothing · UAE online store", title: "Shop Zara", description: "Explore clothing and footwear on Zara’s UAE store.", href: "https://www.zara.com/ae/", cta: "Shop Zara", tag: "UAE online store", reason: `Clothing · ${result.emirate}` },
+          { brand: "Marks & Spencer", label: "Clothing · UAE online store", title: "Shop Marks & Spencer", description: "Explore clothing and footwear on Marks & Spencer’s UAE store.", href: "https://www.marksandspencer.ae/en-ae/", cta: "Shop Marks & Spencer", tag: "UAE online store", reason: `Clothing · ${result.emirate}` },
+          { brand: "Ted Baker", label: "Clothing · UAE online store", title: "Shop Ted Baker", description: "Explore Ted Baker clothing on its UAE store.", href: "https://www.tedbaker.ae/", cta: "Shop Ted Baker", tag: "UAE online store", reason: `Clothing · ${result.emirate}` }
+        ];
+        availability = "Products, sizes, prices, and stock are shown and confirmed by the retailer’s official store.";
+      } else if (result.need === "furnishings" || result.need === "improvement") {
+        const ace = result.need === "improvement";
+        heading = ace ? "Improvement project ideas" : "Room furnishing ideas";
+        summary = `A place to start · ${result.emirate}`;
+        cards = [{ brand: ace ? "ACE" : "IKEA", label: ace ? "Home improvement concept" : "Home furnishing", title: ace ? "Plan your project with the right essentials" : "A room-by-room furnishing shortlist", description: ace ? "Explore tools, materials and home-improvement essentials around the project you have in mind. Confirm product selection and availability with ACE." : "Explore furniture, lighting and storage ideas around the rooms you want to make work better.", href: ace ? "https://www.aceuae.com/" : "https://www.ikea.com/ae/en/", cta: ace ? "Visit ACE UAE" : "Visit IKEA UAE", tag: "Concept recommendation", reason: `${ace ? "Planning an improvement" : "Furnishing a home"} · ${result.emirate}` }];
+      }
+
+      $("#results-eyebrow").textContent = `A FIRST LOOK · ${result.emirate.toUpperCase()}`;
+      $("#results-heading").textContent = heading;
+      $("#summary").textContent = summary;
+      $("#cards").innerHTML = cards.map((item) => card(item, { availability })).join("");
+      $("#count").textContent = cards.length ? `${cards.length} ${result.need === "gift" ? cards.length === 1 ? "gift shop" : "gift shops" : result.need === "property" ? cards.length === 1 ? "property" : "properties" : result.need === "car-rental" ? "rental option" + (cards.length === 1 ? "" : "s") : result.need === "car" ? "car option" + (cards.length === 1 ? "" : "s") : "option" + (cards.length === 1 ? "" : "s")} ${cards.length === 1 ? "matches" : "match"} your search` : "";
+      $("#no-match").hidden = Boolean(cards.length);
+      $("#no-match-title").textContent = noMatchTitle;
+      $("#no-match-copy").textContent = noMatchCopy;
+      $("#disclaimer").textContent = disclaimer;
+      resultSection.hidden = false;
+      resultSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const request = input.value.trim();
+      if (!request) { input.focus(); return; }
+      buildResults(parseRequest(request));
+    });
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && !event.shiftKey && !event.isComposing) {
+        event.preventDefault();
+        form.requestSubmit();
+      }
+    });
+    document.querySelectorAll("[data-prompt]").forEach((button) => button.addEventListener("click", () => {
+      input.value = button.dataset.prompt;
+      input.focus();
+    }));
+    $("#edit").addEventListener("click", () => {
+      input.focus({ preventScroll: true });
+      input.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  </script>
+</body>
+</html>
